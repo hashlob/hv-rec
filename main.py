@@ -61,7 +61,7 @@ def process_images():
 # Main function
 def main():
     try:
-         Uncomment the following line for Streamlit deployment
+         #Uncomment the following line for Streamlit deployment
          st.title('Human and Vehicle Recognition')
 
         # Process the images in the SAMPLE folder
