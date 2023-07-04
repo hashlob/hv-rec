@@ -67,5 +67,5 @@ def main():
         st.error(traceback.format_exc())
 
 # Uncomment the following line for Streamlit deployment
- if __name__ == '__main__':
-     main()
+# if __name__ == '__main__':
+#     main()
