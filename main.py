@@ -11,7 +11,7 @@ import streamlit as st
 def recognize_objects(image):
     try:
         # Load the pre-trained YOLO model
-        net = cv2.dnn.readNetFromDarknet("path/to/yolov3.cfg", "path/to/yolov3.weights")
+        net = cv2.dnn.readNetFromDarknet("yolov3.cfg", "yolov3.weights")
 
         # Rest of the code...
 
