@@ -2,6 +2,7 @@ import os
 import numpy as np
 import traceback
 from PIL import Image
+from imageai.Detection import ObjectDetection
 
 # Import the necessary libraries for Streamlit deployment
 import streamlit as st
@@ -9,37 +10,36 @@ import streamlit as st
 # Function to perform human and vehicle recognition
 def recognize_objects(image):
     try:
-        # Load the pre-trained models for human and vehicle detection
-        human_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_fullbody.xml')
-        vehicle_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_car.xml')
+        # Set up object detection
+        detector = ObjectDetection()
+        model_path = "path/to/resnet50_coco_best_v2.1.0.h5"  # Path to the pre-trained model
+        detector.setModelTypeAsRetinaNet()
+        detector.setModelPath(model_path)
+        detector.loadModel()
 
-        # Convert the image to grayscale for human and vehicle detection
-        gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-        # Detect humans in the image
-        humans = human_classifier.detectMultiScale(gray_image)
-
-        # Detect vehicles in the image
-        vehicles = vehicle_classifier.detectMultiScale(gray_image)
+        # Detect objects in the image
+        detections = detector.detectObjectsFromImage(input_image=image, output_type="array")
 
         # Check if humans or vehicles are detected
-        if len(humans) > 0 or len(vehicles) > 0:
-            # Display the analyzed image with bounding boxes
-            for (x, y, w, h) in humans:
-                cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        humans_detected = False
+        vehicles_detected = False
+        for detection in detections:
+            if detection["name"] == "person":
+                humans_detected = True
+            elif detection["name"] == "car":
+                vehicles_detected = True
 
-            for (x, y, w, h) in vehicles:
-                cv2.rectangle(image, (x, y), (x + w, y + h), (255, 0, 0), 2)
-
-            # Display the image with bounding boxes
-            st.image(image, channels="BGR")
-
-            # Print a message indicating the detection
-            st.success("Detected humans or vehicles in the uploaded image.")
+        # Display the analyzed image with bounding boxes
+        if humans_detected or vehicles_detected:
+            st.image(detections["image"], channels="RGB")
+            if humans_detected:
+                st.success("Detected humans in the uploaded image.")
+            if vehicles_detected:
+                st.success("Detected vehicles in the uploaded image.")
         else:
             st.warning("No humans or vehicles detected in the uploaded image.")
     except ImportError:
-        raise ImportError("OpenCV (cv2) is not installed. Please install it using 'pip install opencv-python'.")
+        raise ImportError("imageai library is not installed. Please install it using 'pip install imageai --upgrade'.")
 
 # Main function
 def main():
