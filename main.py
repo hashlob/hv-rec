@@ -43,7 +43,7 @@ def recognize_objects(image_path):
 
 # Function to process the images in the SAMPLE folder
 def process_images():
-    sample_folder = 'C:/SAMPLE'
+    sample_folder = 'SAMPLE'
 
     # Get the list of files in the SAMPLE folder
     image_files = os.listdir(sample_folder)
