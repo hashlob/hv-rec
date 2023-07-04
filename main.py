@@ -1,5 +1,4 @@
 import os
-import cv2
 import numpy as np
 import traceback
 
@@ -8,34 +7,39 @@ import streamlit as st
 
 # Function to perform human and vehicle recognition
 def recognize_objects(image_path):
-    # Load the pre-trained models for human and vehicle detection
-    human_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_fullbody.xml')
-    vehicle_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_car.xml')
+    try:
+        import cv2
 
-    # Read the image
-    image = cv2.imread(image_path)
+        # Load the pre-trained models for human and vehicle detection
+        human_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_fullbody.xml')
+        vehicle_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_car.xml')
 
-    # Convert the image to grayscale for human and vehicle detection
-    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        # Read the image
+        image = cv2.imread(image_path)
 
-    # Detect humans in the image
-    humans = human_classifier.detectMultiScale(gray_image)
+        # Convert the image to grayscale for human and vehicle detection
+        gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    # Detect vehicles in the image
-    vehicles = vehicle_classifier.detectMultiScale(gray_image)
+        # Detect humans in the image
+        humans = human_classifier.detectMultiScale(gray_image)
 
-    # Check if humans or vehicles are detected
-    if len(humans) > 0 or len(vehicles) > 0:
-        # Save the analyzed image to the ANALYZED folder
-        analyzed_folder = 'C:/ANALYZED'
-        analyzed_path = os.path.join(analyzed_folder, os.path.basename(image_path))
-        cv2.imwrite(analyzed_path, image)
+        # Detect vehicles in the image
+        vehicles = vehicle_classifier.detectMultiScale(gray_image)
 
-        # Print a message indicating the detection
-        print(f"Detected humans or vehicles in image: {image_path}")
+        # Check if humans or vehicles are detected
+        if len(humans) > 0 or len(vehicles) > 0:
+            # Save the analyzed image to the ANALYZED folder
+            analyzed_folder = 'C:/ANALYZED'
+            analyzed_path = os.path.join(analyzed_folder, os.path.basename(image_path))
+            cv2.imwrite(analyzed_path, image)
 
-    # Delete the image that does not show people or cars
-    os.remove(image_path)
+            # Print a message indicating the detection
+            print(f"Detected humans or vehicles in image: {image_path}")
+
+        # Delete the image that does not show people or cars
+        os.remove(image_path)
+    except ImportError:
+        raise ImportError("OpenCV (cv2) is not installed. Please install it using 'pip install opencv-python'.")
 
 # Function to process the images in the SAMPLE folder
 def process_images():
@@ -57,8 +61,8 @@ def process_images():
 # Main function
 def main():
     try:
-        # Uncomment the following line for Streamlit deployment
-        # st.title('Human and Vehicle Recognition')
+         Uncomment the following line for Streamlit deployment
+         st.title('Human and Vehicle Recognition')
 
         # Process the images in the SAMPLE folder
         process_images()
@@ -67,5 +71,5 @@ def main():
         st.error(traceback.format_exc())
 
 # Uncomment the following line for Streamlit deployment
-# if __name__ == '__main__':
-#     main()
+ if __name__ == '__main__':
+     main()
