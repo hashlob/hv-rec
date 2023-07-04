@@ -11,9 +11,26 @@ import streamlit as st
 def recognize_objects(image):
     try:
         # Load the pre-trained YOLO model
-        net = cv2.dnn.readNetFromDarknet("yolov3.cfg", "yolov3.weights")
+        net = cv2.dnn.readNetFromDarknet("path/to/yolov3.cfg", "path/to/yolov3.weights")
+
+        # Define the classes for detection (person and car)
+        classes = ["person", "car"]
+
+        # Extract the dimensions of the image
+        (h, w) = image.shape[:2]
+
+        # Create a blob from the image and perform forward pass through the network
+        blob = cv2.dnn.blobFromImage(image, 1 / 255.0, (416, 416), swapRB=True, crop=False)
+        net.setInput(blob)
+        layer_names = net.getLayerNames()
+        output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
+        outputs = net.forward(output_layers)
 
         # Rest of the code...
+        # ...
+
+    except ImportError:
+        raise ImportError("OpenCV is not installed. Please install it using 'pip install opencv-python'.")
 
 # Main function
 def main():
