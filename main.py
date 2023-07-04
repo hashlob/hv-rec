@@ -43,7 +43,7 @@ def recognize_objects(image_path):
 
 # Function to process the images in the SAMPLE folder
 def process_images():
-    sample_folder = 'SAMPLE'
+    sample_folder = 'C:/SAMPLE'
 
     # Get the list of files in the SAMPLE folder
     image_files = os.listdir(sample_folder)
@@ -61,8 +61,8 @@ def process_images():
 # Main function
 def main():
     try:
-         #Uncomment the following line for Streamlit deployment
-         st.title('Human and Vehicle Recognition')
+        # Uncomment the following line for Streamlit deployment
+        # st.title('Human and Vehicle Recognition')
 
         # Process the images in the SAMPLE folder
         process_images()
@@ -71,5 +71,5 @@ def main():
         st.error(traceback.format_exc())
 
 # Uncomment the following line for Streamlit deployment
- if __name__ == '__main__':
-     main()
+# if __name__ == '__main__':
+#     main()
