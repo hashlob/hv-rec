@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import traceback
+import cv2  # Import OpenCV
 
 # Import the necessary libraries for Streamlit deployment
 import streamlit as st
@@ -8,8 +9,6 @@ import streamlit as st
 # Function to perform human and vehicle recognition
 def recognize_objects(image):
     try:
-        import cv2
-
         # Load the pre-trained models for human and vehicle detection
         human_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_fullbody.xml')
         vehicle_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_car.xml')
