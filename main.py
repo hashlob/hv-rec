@@ -1,6 +1,7 @@
 import os
 import cv2
 import numpy as np
+import traceback
 
 # Import the necessary libraries for Streamlit deployment
 import streamlit as st
@@ -55,12 +56,16 @@ def process_images():
 
 # Main function
 def main():
-    # Uncomment the following line for Streamlit deployment
-    # st.title('Human and Vehicle Recognition')
+    try:
+        # Uncomment the following line for Streamlit deployment
+        # st.title('Human and Vehicle Recognition')
 
-    # Process the images in the SAMPLE folder
-    process_images()
+        # Process the images in the SAMPLE folder
+        process_images()
+    except Exception as e:
+        # Print the full error details
+        st.error(traceback.format_exc())
 
 # Uncomment the following line for Streamlit deployment
-# if __name__ == '__main__':
-#     main()
+ if __name__ == '__main__':
+     main()
