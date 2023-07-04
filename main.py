@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import traceback
-import cv2  # Import OpenCV
+from PIL import Image
 
 # Import the necessary libraries for Streamlit deployment
 import streamlit as st
@@ -51,8 +51,8 @@ def main():
 
         if uploaded_file is not None:
             # Read the uploaded image
-            image = np.array(bytearray(uploaded_file.read()), dtype=np.uint8)
-            image = cv2.imdecode(image, cv2.IMREAD_COLOR)
+            image = Image.open(uploaded_file)
+            image = np.array(image)
 
             # Perform human and vehicle recognition on the image
             recognize_objects(image)
