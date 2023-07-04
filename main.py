@@ -6,16 +6,13 @@ import traceback
 import streamlit as st
 
 # Function to perform human and vehicle recognition
-def recognize_objects(image_path):
+def recognize_objects(image):
     try:
         import cv2
 
         # Load the pre-trained models for human and vehicle detection
         human_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_fullbody.xml')
         vehicle_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_car.xml')
-
-        # Read the image
-        image = cv2.imread(image_path)
 
         # Convert the image to grayscale for human and vehicle detection
         gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -28,48 +25,42 @@ def recognize_objects(image_path):
 
         # Check if humans or vehicles are detected
         if len(humans) > 0 or len(vehicles) > 0:
-            # Save the analyzed image to the ANALYZED folder
-            analyzed_folder = 'C:/ANALYZED'
-            analyzed_path = os.path.join(analyzed_folder, os.path.basename(image_path))
-            cv2.imwrite(analyzed_path, image)
+            # Display the analyzed image with bounding boxes
+            for (x, y, w, h) in humans:
+                cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+            for (x, y, w, h) in vehicles:
+                cv2.rectangle(image, (x, y), (x + w, y + h), (255, 0, 0), 2)
+
+            # Display the image with bounding boxes
+            st.image(image, channels="BGR")
 
             # Print a message indicating the detection
-            print(f"Detected humans or vehicles in image: {image_path}")
-
-        # Delete the image that does not show people or cars
-        os.remove(image_path)
+            st.success("Detected humans or vehicles in the uploaded image.")
+        else:
+            st.warning("No humans or vehicles detected in the uploaded image.")
     except ImportError:
         raise ImportError("OpenCV (cv2) is not installed. Please install it using 'pip install opencv-python'.")
-
-# Function to process the images in the SAMPLE folder
-def process_images():
-    sample_folder = 'C:/SAMPLE'
-
-    # Get the list of files in the SAMPLE folder
-    image_files = os.listdir(sample_folder)
-
-    # Iterate over each image file
-    for image_file in image_files:
-        # Check if the file is a JPEG image
-        if image_file.endswith('.jpg') or image_file.endswith('.jpeg'):
-            # Construct the path to the image file
-            image_path = os.path.join(sample_folder, image_file)
-
-            # Perform human and vehicle recognition on the image
-            recognize_objects(image_path)
 
 # Main function
 def main():
     try:
-        # Uncomment the following line for Streamlit deployment
-        # st.title('Human and Vehicle Recognition')
+        st.title('Human and Vehicle Recognition')
 
-        # Process the images in the SAMPLE folder
-        process_images()
+        # Create a file uploader in the Streamlit app
+        uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg"])
+
+        if uploaded_file is not None:
+            # Read the uploaded image
+            image = np.array(bytearray(uploaded_file.read()), dtype=np.uint8)
+            image = cv2.imdecode(image, cv2.IMREAD_COLOR)
+
+            # Perform human and vehicle recognition on the image
+            recognize_objects(image)
+
     except Exception as e:
         # Print the full error details
         st.error(traceback.format_exc())
 
-# Uncomment the following line for Streamlit deployment
-# if __name__ == '__main__':
-#     main()
+if __name__ == '__main__':
+    main()
